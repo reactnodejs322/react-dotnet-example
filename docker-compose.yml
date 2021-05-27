@@ -1,0 +1,29 @@
+version: "3"
+services:
+  nginx:
+    container_name: nginx
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 80:80
+      - 443:443
+    depends_on:
+      - dotnet_react
+  dotnet_react:
+    container_name: dotnet_react
+    build:
+      context: ./
+      dockerfile: Dockerfile
+    restart: always
+    ports:
+      - 8000:80
+      - 8001:443
+    environment:
+      ASPNETCORE_URLS: "https://+;http://+"
+      ASPNETCORE_HTTPS_PORT: "5001"
+      ASPNETCORE_Kestrel__Certificates__Default__Password: "1234"
+      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/dotnet_react.pfx
+    volumes:
+      - ~/.aspnet/https:/https:ro
