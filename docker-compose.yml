@@ -1,29 +1,48 @@
-version: "3"
+version: "3.7"
+
 services:
-  nginx:
-    container_name: nginx
+  reverseproxy:
     build:
       context: ./nginx
       dockerfile: Dockerfile
-    restart: always
     ports:
-      - 80:80
-      - 443:443
+      - "80:80"
+      # - "443:443"
+
     depends_on:
-      - dotnet_react
-  dotnet_react:
-    container_name: dotnet_react
-    build:
-      context: ./
-      dockerfile: Dockerfile
+      - client
+      - api
     restart: always
-    ports:
-      - 8000:80
-      - 8001:443
-    environment:
-      ASPNETCORE_URLS: "https://+;http://+"
-      ASPNETCORE_HTTPS_PORT: "5001"
-      ASPNETCORE_Kestrel__Certificates__Default__Password: "1234"
-      ASPNETCORE_Kestrel__Certificates__Default__Path: /https/dotnet_react.pfx
+    links:
+      - client
+      - api
+
+  client:
+    stdin_open: true
+    container_name: client
+    build:
+      context: "./client"
+      dockerfile: Dockerfile
+    links:
+      - api
+    depends_on:
+      - api
     volumes:
-      - ~/.aspnet/https:/https:ro
+      - "./client:/usr/src/app"
+      - "/usr/src/app/node_modules"
+    environment:
+      - NODE_ENV=production
+    ports:
+      - 3000:80
+  api:
+    container_name: api
+    ports:
+      - 5000:80
+    build:
+      context: ./users
+      dockerfile: Dockerfile
+    environment:
+      # for development http://
+      # for production  http://+:5000
+      ASPNETCORE_URLS: "http://+;http://+:5000"
+    restart: always
