@@ -30,8 +30,9 @@ services:
     volumes:
       - "./client:/usr/src/app"
       - "/usr/src/app/node_modules"
-    args:
+    environment:
       - NODE_ENV=production
+      - REACT_APP_API_SERVICE_URL=${REACT_APP_API_SERVICE_URL}
     ports:
       - 3000:80
   api:
