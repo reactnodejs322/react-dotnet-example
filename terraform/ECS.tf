@@ -7,8 +7,8 @@ module "ecs_cluster" {
   vpc_id     = aws_default_vpc.default.id
   subnet_ids = [aws_default_subnet.default_us-east-1a.id, aws_default_subnet.default_us-east-1b.id]
 
-  component             = "micro"
-  deployment_identifier = "react-nginx"
+  component             = "dotnet"
+  deployment_identifier = "react"
 
   cluster_name                         = "cluster"
   cluster_instance_ssh_public_key_path = "./terraform.pub"
@@ -46,7 +46,7 @@ resource "aws_ecs_task_definition" "users-td" {
 
 
     "essential": true,
-    "image": "${var.docker-username}/${var.my-project-name}-users:prod",
+    "image": "${var.docker-username}/users:prod",
     "memory": null,
     "memoryReservation": 128,
     "name": "users"
@@ -84,7 +84,7 @@ resource "aws_ecs_task_definition" "client-td" {
 
 
     "essential": true,
-    "image": "${var.docker-username}/${var.my-project-name}-client:prod",
+    "image": "${var.docker-username}/client:prod",
     "memory": null,
     "memoryReservation": 128,
     "name": "client"
@@ -98,7 +98,7 @@ DEFINITION
 # FOR USERS SERVICE
 resource "aws_ecs_service" "users-service" {
   name            = "${var.my-project-name}-users-service"
-  cluster         = "${var.my-project-name}-cluster"
+  cluster         = "dotnet-react-cluster"
   task_definition = aws_ecs_task_definition.users-td.arn
   desired_count   = 1
 
@@ -117,7 +117,7 @@ resource "aws_ecs_service" "users-service" {
 # FOR CLIENT SERVICE
 resource "aws_ecs_service" "client-service" {
   name            = "${var.my-project-name}-client-service"
-  cluster         = "${var.my-project-name}-cluster"
+  cluster         = "dotnet-react-cluster"
   task_definition = aws_ecs_task_definition.client-td.arn
   desired_count   = 1
 

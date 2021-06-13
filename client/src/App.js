@@ -12,7 +12,8 @@ const App = () => {
 
   return (
     <div>
-      Hello <b />
+      Hello users {JSON.stringify(user)}
+      <b />
     </div>
   );
 };
