@@ -28,9 +28,9 @@ update_service() {
 
 deploy_cluster() {
 
-  cluster="micro-react-nginx-cluster" # for all commits on git this will update the ecs
+  cluster="dotnet-react-cluster" # for all commits on git this will update the ecs
   
-  service="micro-react-nginx-users-service"  # for all commits on git this will update the ecs
+  service="react-dotnet-users-service"  # for all commits on git this will update the ecs
 
 #$AWS_ACCOUNT_ID
   # Users
@@ -42,7 +42,7 @@ deploy_cluster() {
   update_service  # for all commits on git this will update the ecs
 
   # Client
-  service="micro-react-nginx-client-service"   # for all commits on git this will update the ecs
+  service="react-dotnet-client-service"   # for all commits on git this will update the ecs
   template="ecs_client_taskdefinition.json"
   task_template=$(cat "ecs/$template")
   task_def=$(printf "$task_template" $DOCKER_USERNAME)
@@ -62,8 +62,8 @@ echo $CODEBUILD_WEBHOOK_TRIGGER
 echo $CODEBUILD_WEBHOOK_EVENT
 
 # new
-if  [ "$CODEBUILD_WEBHOOK_TRIGGER" == "branch/main" ] && \
-    [ "$CODEBUILD_WEBHOOK_HEAD_REF" == "refs/heads/main" ]
+if  [ "$CODEBUILD_WEBHOOK_TRIGGER" == "branch/master" ] && \
+    [ "$CODEBUILD_WEBHOOK_HEAD_REF" == "refs/heads/master" ]
 then
   echo "Updating ECS."
   configure_aws_cli
