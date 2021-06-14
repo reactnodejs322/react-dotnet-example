@@ -16,7 +16,6 @@ services:
     links:
       - client
       - api
-
   client:
     stdin_open: true
     container_name: client
@@ -47,3 +46,19 @@ services:
       # for production  http://+:5000
       ASPNETCORE_URLS: "http://+;http://+:5000"
     restart: always
+  database:
+    container_name: database
+    image: mysql:5.7
+    environment:
+      MYSQL_ROOT_PASSWORD: exam
+      # MYSQL_DATABASE: Usersdb
+      MYSQL_USER: admin
+      MYSQL_PASSWORD: example
+      DATABASE_HOST: database #change this to the container's name
+    #Specify where the persisted Data should be stored
+    volumes:
+      - ./database:/var/lib/mysql
+      - ./users/sql-scripts/setup.sql:/docker-entrypoint-initdb.d/1.sql
+    restart: always
+    ports:
+      - "3306:3306"

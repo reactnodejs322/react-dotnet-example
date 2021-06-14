@@ -15,8 +15,8 @@ module "ecs_cluster" {
   cluster_instance_type                = "t2.micro"
 
   cluster_minimum_size     = 0
-  cluster_maximum_size     = 2
-  cluster_desired_capacity = 2
+  cluster_maximum_size     = 1
+  cluster_desired_capacity = 1
   security_groups          = [aws_security_group.sg.id]
 }
 
