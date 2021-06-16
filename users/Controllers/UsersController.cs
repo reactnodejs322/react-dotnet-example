@@ -27,6 +27,7 @@ namespace react_dotnet_example.Controllers
             var password = _configuration["MYSQL_ROOT_PASSWORD"] ?? "dbuserpassword";
             var userid = _configuration["MYSQL_USER"] ?? "dbuser";
             connString = $"server={host};port=3306;userid={userid};password={password};database=users_prod;";
+
         }
 
         [HttpGet]
@@ -34,20 +35,19 @@ namespace react_dotnet_example.Controllers
         public async Task<IActionResult> Index()
         {
 
-            return Ok(200);
-            // string sql = "SELECT * from owner";
-            // try
-            // {
-            //     using (var connection = new MySqlConnection(connString))
-            //     {
-            //         var owner = await connection.QueryAsync<Owner>(sql);
-            //         return Ok(owner);
-            //     }
-            // }
-            // catch (Exception)
-            // {
-            //     return Ok(connString);
-            // }
+            string sql = "SELECT * from owner";
+            try
+            {
+                using (var connection = new MySqlConnection(connString))
+                {
+                    var owner = await connection.QueryAsync<Owner>(sql);
+                    return Ok(owner);
+                }
+            }
+            catch (Exception)
+            {
+                return Ok(connString);
+            }
 
 
         }

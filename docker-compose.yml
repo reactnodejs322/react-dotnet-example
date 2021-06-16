@@ -42,10 +42,31 @@ services:
       context: ./users
       dockerfile: Dockerfile
     environment:
+      DATABASE_HOST: database
+      MYSQL_ROOT_PASSWORD: dbuserpassword
+      MYSQL_USER: dbuser
       # for development http://
       # for production  http://+:5000
       ASPNETCORE_URLS: "http://+;http://+:5000"
     restart: always
+  # MySQL Database Container
+#   database:
+#     container_name: database
+#     image: mysql:5.7
+#     environment:
+#       MYSQL_RANDOM_ROOT_PASSWORD: 1
+#       MYSQL_DATABASE: users_prod
+#       MYSQL_USER: dbuser
+#       MYSQL_PASSWORD: dbuserpassword
+#     volumes:
+#       - dbdata:/var/lib/mysql
+#       - ./_MySQL_Init_Script:/docker-entrypoint-initdb.d
+#     ports:
+#       - 3306:3306
+#     restart: always
+# # For development data to be stored in a docker volume
+# volumes:
+#   dbdata:
 # version: "3.7"
 
 # services:
@@ -84,22 +105,6 @@ services:
 #     ports:
 #       - 3000:80
 
-#   # MySQL Database Container
-#   # database:
-#   #   container_name: database
-#   #   image: mysql:5.7
-#   #   environment:
-#   #     MYSQL_RANDOM_ROOT_PASSWORD: 1
-#   #     MYSQL_DATABASE: users_prod
-#   #     MYSQL_USER: dbuser
-#   #     MYSQL_PASSWORD: dbuserpassword
-#   #   volumes:
-#   #     - dbdata:/var/lib/mysql
-#   #     - ./_MySQL_Init_Script:/docker-entrypoint-initdb.d
-#   #   ports:
-#   #     - 3306:3306
-#   #   restart: always
-
 #   # .Net Container
 #   api:
 #     container_name: api
@@ -118,6 +123,21 @@ services:
 #     ports:
 #       - "5000:80"
 #     restart: always
+#   # MySQL Database Container
+#   # database:
+#   #   container_name: database
+#   #   image: mysql:5.7
+#   #   environment:
+#   #     MYSQL_RANDOM_ROOT_PASSWORD: 1
+#   #     MYSQL_DATABASE: users_prod
+#   #     MYSQL_USER: dbuser
+#   #     MYSQL_PASSWORD: dbuserpassword
+#   #   volumes:
+#   #     - dbdata:/var/lib/mysql
+#   #     - ./_MySQL_Init_Script:/docker-entrypoint-initdb.d
+#   #   ports:
+#   #     - 3306:3306
+#   #   restart: always
 # # For development data to be stored in a docker volume
 # volumes:
 #   dbdata:
