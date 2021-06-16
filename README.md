@@ -14,6 +14,7 @@ status code: 403, request id: 4390670f-576b-40fa-a209-7c85ac3c9648
 Create a new aws user with admin and billing permission
 
 add this role for safety!
+retry
 
 ````
 {
