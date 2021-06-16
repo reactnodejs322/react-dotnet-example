@@ -13,10 +13,14 @@ services:
       - client
       - api
     restart: always
+    links:
+      - client
+      - api
 
   # React Container
   client:
     stdin_open: true
+    container_name: client
     build:
       context: "./client"
       dockerfile: Dockerfile
@@ -33,23 +37,24 @@ services:
       - 3000:80
 
   # MySQL Database Container
-  database:
-    container_name: database
-    image: mysql:5.7
-    environment:
-      MYSQL_RANDOM_ROOT_PASSWORD: 1
-      MYSQL_DATABASE: users_prod
-      MYSQL_USER: dbuser
-      MYSQL_PASSWORD: dbuserpassword
-    volumes:
-      - dbdata:/var/lib/mysql
-      - ./_MySQL_Init_Script:/docker-entrypoint-initdb.d
-    ports:
-      - 3306:3306
-    restart: always
+  # database:
+  #   container_name: database
+  #   image: mysql:5.7
+  #   environment:
+  #     MYSQL_RANDOM_ROOT_PASSWORD: 1
+  #     MYSQL_DATABASE: users_prod
+  #     MYSQL_USER: dbuser
+  #     MYSQL_PASSWORD: dbuserpassword
+  #   volumes:
+  #     - dbdata:/var/lib/mysql
+  #     - ./_MySQL_Init_Script:/docker-entrypoint-initdb.d
+  #   ports:
+  #     - 3306:3306
+  #   restart: always
 
   # .Net Container
   api:
+    container_name: api
     depends_on:
       - database
     build:
