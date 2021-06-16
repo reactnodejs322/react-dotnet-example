@@ -63,7 +63,7 @@ services:
       # for production  http://+:5000
       ASPNETCORE_URLS: "http://+;http://+:5000"
     ports:
-      - "5000:5000"
+      - "5000:80"
     restart: always
 # For development data to be stored in a docker volume
 volumes:
