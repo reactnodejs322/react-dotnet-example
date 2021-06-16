@@ -1,64 +1,70 @@
 version: "3.7"
 
 services:
-  reverseproxy:
-    build:
-      context: ./nginx
-      dockerfile: Dockerfile
-    ports:
-      - "80:80"
-      # - "443:443"
+  # # Nginx Container
+  # reverseproxy:
+  #   build:
+  #     context: ./nginx
+  #     dockerfile: Dockerfile
+  #   ports:
+  #     - "80:80"
+  #     # - "443:443"
+  #   depends_on:
+  #     - client
+  #     - api
+  #   restart: always
 
-    depends_on:
-      - client
-      - api
-    restart: always
-    links:
-      - client
-      - api
-  client:
-    stdin_open: true
-    container_name: client
-    build:
-      context: "./client"
-      dockerfile: Dockerfile
-    links:
-      - api
-    depends_on:
-      - api
-    volumes:
-      - "./client:/usr/src/app"
-      - "/usr/src/app/node_modules"
-    environment:
-      - NODE_ENV=production
-      - REACT_APP_API_SERVICE_URL=${REACT_APP_API_SERVICE_URL}
-    ports:
-      - 3000:80
-  api:
-    container_name: api
-    ports:
-      - 5000:80
-    build:
-      context: ./users
-      dockerfile: Dockerfile
-    environment:
-      # for development http://
-      # for production  http://+:5000
-      ASPNETCORE_URLS: "http://+;http://+:5000"
-    restart: always
+  # # React Container
+  # client:
+  #   stdin_open: true
+  #   build:
+  #     context: "./client"
+  #     dockerfile: Dockerfile
+  #   links:
+  #     - api
+  #   depends_on:
+  #     - api
+  #   volumes:
+  #     - "./client:/usr/src/app"
+  #     - "/usr/src/app/node_modules"
+  #   environment:
+  #     - NODE_ENV=production
+  #   ports:
+  #     - 3000:80
+
+  # MySQL Database Container
   database:
     container_name: database
     image: mysql:5.7
     environment:
-      MYSQL_ROOT_PASSWORD: exam
-      # MYSQL_DATABASE: Usersdb
-      MYSQL_USER: admin
-      MYSQL_PASSWORD: example
-      DATABASE_HOST: database #change this to the container's name
-    #Specify where the persisted Data should be stored
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: users_prod
+      MYSQL_USER: dbuser
+      MYSQL_PASSWORD: dbuserpassword
     volumes:
-      - ./database:/var/lib/mysql
-      - ./users/sql-scripts/setup.sql:/docker-entrypoint-initdb.d/1.sql
-    restart: always
+      - dbdata:/var/lib/mysql
+      - ./_MySQL_Init_Script:/docker-entrypoint-initdb.d
     ports:
-      - "3306:3306"
+      - 3306:3306
+    restart: always
+
+  # .Net Container
+  api:
+    depends_on:
+      - database
+    build:
+      context: ./users
+      dockerfile: Dockerfile
+    environment:
+      DATABASE_HOST: database
+      MYSQL_ROOT_PASSWORD: dbuserpassword
+      MYSQL_USER: dbuser
+      # for development http://
+      # for production  http://+:5000
+      ASPNETCORE_URLS: "http://+;http://+:5000"
+    ports:
+      - "8080:5000"
+    restart: always
+# For development data to be stored in a docker volume
+volumes:
+  dbdata:

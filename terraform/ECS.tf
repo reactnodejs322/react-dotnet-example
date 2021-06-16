@@ -31,8 +31,17 @@ resource "aws_ecs_task_definition" "users-td" {
 [
   {
     "cpu": 0,
-   
 
+    "environment": [
+    {"name": "DATABASE_HOST",
+      "value": "${element(split(":", aws_db_instance.dotnet-react-db.endpoint), 0)}"},
+
+    {"name":"MYSQL_ROOT_PASSWORD",
+    "value":"${var.mysql-root-password}"},
+
+    {"name":"MYSQL_USER",
+    "value":"${var.mysql-user}"}
+    ],
 
     "portMappings": [
         {
@@ -41,10 +50,6 @@ resource "aws_ecs_task_definition" "users-td" {
           "containerPort": 5000
         }
       ],
-
-
-
-
     "essential": true,
     "image": "${var.docker-username}/users:prod",
     "memory": null,
