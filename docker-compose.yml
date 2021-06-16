@@ -1,36 +1,36 @@
 version: "3.7"
 
 services:
-  # # Nginx Container
-  # reverseproxy:
-  #   build:
-  #     context: ./nginx
-  #     dockerfile: Dockerfile
-  #   ports:
-  #     - "80:80"
-  #     # - "443:443"
-  #   depends_on:
-  #     - client
-  #     - api
-  #   restart: always
+  # Nginx Container
+  reverseproxy:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile
+    ports:
+      - "80:80"
+      # - "443:443"
+    depends_on:
+      - client
+      - api
+    restart: always
 
-  # # React Container
-  # client:
-  #   stdin_open: true
-  #   build:
-  #     context: "./client"
-  #     dockerfile: Dockerfile
-  #   links:
-  #     - api
-  #   depends_on:
-  #     - api
-  #   volumes:
-  #     - "./client:/usr/src/app"
-  #     - "/usr/src/app/node_modules"
-  #   environment:
-  #     - NODE_ENV=production
-  #   ports:
-  #     - 3000:80
+  # React Container
+  client:
+    stdin_open: true
+    build:
+      context: "./client"
+      dockerfile: Dockerfile
+    links:
+      - api
+    depends_on:
+      - api
+    volumes:
+      - "./client:/usr/src/app"
+      - "/usr/src/app/node_modules"
+    environment:
+      - NODE_ENV=production
+    ports:
+      - 3000:80
 
   # MySQL Database Container
   database:
