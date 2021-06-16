@@ -12,7 +12,7 @@ const App = () => {
 
   return (
     <div>
-      Hello users {JSON.stringify(user)}
+      Hello empty Users! {JSON.stringify(user)}
       <b />
     </div>
   );

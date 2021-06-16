@@ -24,18 +24,18 @@ phases:
   build:
     commands:
       - echo building and testing dev images...
-      - docker-compose up -d --build
+      - docker-compose -f docker-compose.prod.yml up -d --build
       - echo building prod images...
       - >
         docker build \
-          -f users/Dockerfile \
+          -f users/Dockerfile.prod \
           -t $DOCKER_USERNAME/dotnet-react-users:$DOCKER_TAG  \
           ./users
       - >
         docker build \
           --target builder \
           --cache-from $DOCKER_USERNAME/dotnet-react-client:builder \
-          -f client/Dockerfile \
+          -f client/Dockerfile.prod \
           -t $DOCKER_USERNAME/dotnet-react-client:builder \
           --build-arg NODE_ENV=production \
           --build-arg REACT_APP_API_SERVICE_URL=$REACT_APP_API_SERVICE_URL \
@@ -43,7 +43,7 @@ phases:
       - >
         docker build \
           --cache-from $DOCKER_USERNAME/dotnet-react-client:$DOCKER_TAG  \
-          -f client/Dockerfile \
+          -f client/Dockerfile.prod \
           -t $DOCKER_USERNAME/dotnet-react-client:$DOCKER_TAG  \
           ./client
   post_build:

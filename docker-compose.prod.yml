@@ -1,0 +1,52 @@
+version: "3.7"
+services:
+  # NGINX CONTAINER
+  reverseproxy:
+    build:
+      context: ./nginx
+      dockerfile: Dockerfile.prod
+    ports:
+      - "80:80"
+      # - "443:443"
+
+    depends_on:
+      - client
+      - api
+    restart: always
+    links:
+      - client
+      - api
+  # REACT CONTAINER
+  client:
+    stdin_open: true
+    container_name: client
+    build:
+      context: "./client"
+      dockerfile: Dockerfile.prod
+    links:
+      - api
+    depends_on:
+      - api
+    volumes:
+      - "./client:/usr/src/app"
+      - "/usr/src/app/node_modules"
+    environment:
+      - NODE_ENV=production
+    ports:
+      - 3000:80
+  # .NET CONTAINER
+  api:
+    container_name: api
+    ports:
+      - 5000:80
+    build:
+      context: ./users
+      dockerfile: Dockerfile.prod
+    environment:
+      DATABASE_HOST: database
+      MYSQL_ROOT_PASSWORD: dbuserpassword
+      MYSQL_USER: dbuser
+      # for development http://
+      # for production  http://+:5000
+      ASPNETCORE_URLS: "http://+;http://+:5000"
+    restart: always

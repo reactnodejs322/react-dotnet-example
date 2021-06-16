@@ -1,10 +1,23 @@
 # Microservice template
 
+If you are attempting to deploy this Please Contact me!
+easyrun32@gmail.com!
+
+I'll be glad to help! :)
+
 Technolgies
 
-nginx: Reverse Proxy version => latest
-Client: React version => 17.0.1
-users: .NetCore version => 5
+nginx: Reverse Proxy version => latest </br>
+Client: React version => 17.0.1</br>
+users: .NetCore version => 5</br>
+
+Endpoints:
+
+- /api/users <- .NET
+
+- localhost/api/users <- .NET
+
+- localhost <- React
 
 ## Common deploy issues
 
@@ -38,3 +51,5 @@ retry
 }```
 
 ````
+
+If anything fails do terraform apply again or terrafrom destroy
