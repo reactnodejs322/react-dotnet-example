@@ -13,13 +13,9 @@ RUN dotnet publish "react-dotnet-example.csproj" -c Release -o /app/publish
 
 FROM base AS final
 WORKDIR /app
-# EXPOSE 80 IMPORTANT
+EXPOSE 80
 COPY --from=publish /app/publish .
-# ENV ASPNETCORE_URLS http://*:5000
-# to copy it into the bash directory
-# COPY wait-for-it.sh /wait-for-it.sh
-# # to make wait-for-it.sh excutable without permission error
-# RUN chmod +x /wait-for-it.sh
+ENV ASPNETCORE_URLS http://*:5000
 ENTRYPOINT ["dotnet", "react-dotnet-example.dll"]
 # # https://hub.docker.com/_/microsoft-dotnet
 # FROM mcr.microsoft.com/dotnet/sdk:5.0.103 AS build
