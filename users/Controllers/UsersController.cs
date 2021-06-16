@@ -34,20 +34,20 @@ namespace react_dotnet_example.Controllers
         public async Task<IActionResult> Index()
         {
 
-
-            string sql = "SELECT * from owner";
-            try
-            {
-                using (var connection = new MySqlConnection(connString))
-                {
-                    var owner = await connection.QueryAsync<Owner>(sql);
-                    return Ok(owner);
-                }
-            }
-            catch (Exception)
-            {
-                return Ok(connString);
-            }
+            return Ok(200);
+            // string sql = "SELECT * from owner";
+            // try
+            // {
+            //     using (var connection = new MySqlConnection(connString))
+            //     {
+            //         var owner = await connection.QueryAsync<Owner>(sql);
+            //         return Ok(owner);
+            //     }
+            // }
+            // catch (Exception)
+            // {
+            //     return Ok(connString);
+            // }
 
 
         }
