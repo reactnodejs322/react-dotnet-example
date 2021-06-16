@@ -55,8 +55,8 @@ services:
   # .Net Container
   api:
     container_name: api
-    depends_on:
-      - database
+    # depends_on:
+    #   - database
     build:
       context: ./users
       dockerfile: Dockerfile
