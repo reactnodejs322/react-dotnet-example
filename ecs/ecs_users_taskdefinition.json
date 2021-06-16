@@ -2,7 +2,7 @@
   "containerDefinitions": [
     {
       "name": "users",
-      "image": "642815940637.dkr.ecr.us-east-1.amazonaws.com/users:prod",
+      "image": "%s/dotnet-react-users:prod",
       "essential": true,
       "memoryReservation": 300,
       "portMappings": [
