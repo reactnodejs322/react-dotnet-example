@@ -14,12 +14,13 @@ phases:
           DOCKER_TAG=${CODEBUILD_RESOLVED_SOURCE_VERSION}
         fi
       - echo "Docker tag:" $DOCKER_TAG
-      - >
-        aws ecr get-login-password --region $AWS_REGION \
-          | docker login --username AWS --password-stdin $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com
-      - docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/users:$DOCKER_TAG  || true
-      - docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/client:builder || true
-      - docker pull $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/client:$DOCKER_TAG  || true
+      - echo "Docker tag:" $DOCKER_TAG
+      - aws s3 cp s3://docker-token/.docker.key .docker.key
+      - docker login -u $DOCKER_USERNAME --password-stdin < .docker.key
+      - rm .docker.key
+      - docker pull $DOCKER_USERNAME/dotnet-react-users:$DOCKER_TAG || true
+      - docker pull $DOCKER_USERNAME/dotnet-react-client:builder || true
+      - docker pull $DOCKER_USERNAME/dotnet-react-client:$DOCKER_TAG || true
   build:
     commands:
       - echo building and testing dev images...
@@ -28,28 +29,28 @@ phases:
       - >
         docker build \
           -f users/Dockerfile \
-          -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/users:$DOCKER_TAG  \
+          -t $DOCKER_USERNAME/dotnet-react-users:$DOCKER_TAG  \
           ./users
       - >
         docker build \
           --target builder \
-          --cache-from $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/client:builder \
+          --cache-from $DOCKER_USERNAME/dotnet-react-client:builder \
           -f client/Dockerfile \
-          -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/client:builder \
+          -t $DOCKER_USERNAME/dotnet-react-client:builder \
           --build-arg NODE_ENV=production \
           --build-arg REACT_APP_API_SERVICE_URL=$REACT_APP_API_SERVICE_URL \
           ./client
       - >
         docker build \
-          --cache-from $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/client:$DOCKER_TAG  \
+          --cache-from $DOCKER_USERNAME/dotnet-react-client:$DOCKER_TAG  \
           -f client/Dockerfile \
-          -t $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/client:$DOCKER_TAG  \
+          -t $DOCKER_USERNAME/dotnet-react-client:$DOCKER_TAG  \
           ./client
   post_build:
     commands:
       - echo pushing prod images to ecr...
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/users:$DOCKER_TAG
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/client:builder
-      - docker push $AWS_ACCOUNT_ID.dkr.ecr.$AWS_REGION.amazonaws.com/client:$DOCKER_TAG
+      - docker push $DOCKER_USERNAME/dotnet-react-users:$DOCKER_TAG
+      - docker push $DOCKER_USERNAME/dotnet-react-client:builder
+      - docker push $DOCKER_USERNAME/dotnet-react-client:$DOCKER_TAG
       - chmod +x ./deploy.sh
       - bash deploy.sh

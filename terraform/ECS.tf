@@ -51,7 +51,8 @@ resource "aws_ecs_task_definition" "users-td" {
         }
       ],
     "essential": true,
-    "image": "${var.docker-username}/users:prod",
+    
+    "image": "${var.docker-username}/dotnet-react-users:prod",
     "memory": null,
     "memoryReservation": 128,
     "name": "users"
@@ -89,7 +90,7 @@ resource "aws_ecs_task_definition" "client-td" {
 
 
     "essential": true,
-    "image": "${var.docker-username}/client:prod",
+    "image": "${var.docker-username}/dotnet-react-client:prod",
     "memory": null,
     "memoryReservation": 128,
     "name": "client"
