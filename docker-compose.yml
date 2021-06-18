@@ -7,15 +7,11 @@ services:
       dockerfile: Dockerfile
     ports:
       - "80:80"
-      # - "443:443"
+      - "443:443"
 
     depends_on:
       - client
-      - api
     restart: always
-    links:
-      - client
-      - api
 
   client:
     stdin_open: true
@@ -23,24 +19,21 @@ services:
     build:
       context: "./client"
       dockerfile: Dockerfile
-    links:
-      - api
-    depends_on:
-      - api
     volumes:
       - "./client:/usr/src/app"
       - "/usr/src/app/node_modules"
     environment:
       - NODE_ENV=production
     ports:
-      - 3000:80
+      - "3000:3000"
+  # .NET CONTAINER
   api:
     container_name: api
     ports:
-      - 5000:80
+      - 5000:5000
     build:
       context: ./users
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.prod
     environment:
       DATABASE_HOST: database
       MYSQL_ROOT_PASSWORD: dbuserpassword
@@ -49,95 +42,21 @@ services:
       # for production  http://+:5000
       ASPNETCORE_URLS: "http://+;http://+:5000"
     restart: always
-  # MySQL Database Container
-#   database:
-#     container_name: database
-#     image: mysql:5.7
-#     environment:
-#       MYSQL_RANDOM_ROOT_PASSWORD: 1
-#       MYSQL_DATABASE: users_prod
-#       MYSQL_USER: dbuser
-#       MYSQL_PASSWORD: dbuserpassword
-#     volumes:
-#       - dbdata:/var/lib/mysql
-#       - ./_MySQL_Init_Script:/docker-entrypoint-initdb.d
-#     ports:
-#       - 3306:3306
-#     restart: always
-# # For development data to be stored in a docker volume
-# volumes:
-#   dbdata:
-# version: "3.7"
-
-# services:
-#   # Nginx Container
-#   reverseproxy:
-#     build:
-#       context: ./nginx
-#       dockerfile: Dockerfile
-#     ports:
-#       - "80:80"
-#       # - "443:443"
-#     depends_on:
-#       - client
-#       - api
-#     restart: always
-#     links:
-#       - client
-#       - api
-
-#   # React Container
-#   client:
-#     stdin_open: true
-#     container_name: client
-#     build:
-#       context: "./client"
-#       dockerfile: Dockerfile
-#     links:
-#       - api
-#     depends_on:
-#       - api
-#     volumes:
-#       - "./client:/usr/src/app"
-#       - "/usr/src/app/node_modules"
-#     environment:
-#       - NODE_ENV=production
-#     ports:
-#       - 3000:80
-
-#   # .Net Container
-#   api:
-#     container_name: api
-#     # depends_on:
-#     #   - database
-#     build:
-#       context: ./users
-#       dockerfile: Dockerfile
-#     environment:
-#       DATABASE_HOST: database
-#       MYSQL_ROOT_PASSWORD: dbuserpassword
-#       MYSQL_USER: dbuser
-#       # for development http://
-#       # for production  http://+:5000
-#       ASPNETCORE_URLS: "http://+;http://+:5000"
-#     ports:
-#       - "5000:80"
-#     restart: always
-#   # MySQL Database Container
-#   # database:
-#   #   container_name: database
-#   #   image: mysql:5.7
-#   #   environment:
-#   #     MYSQL_RANDOM_ROOT_PASSWORD: 1
-#   #     MYSQL_DATABASE: users_prod
-#   #     MYSQL_USER: dbuser
-#   #     MYSQL_PASSWORD: dbuserpassword
-#   #   volumes:
-#   #     - dbdata:/var/lib/mysql
-#   #     - ./_MySQL_Init_Script:/docker-entrypoint-initdb.d
-#   #   ports:
-#   #     - 3306:3306
-#   #   restart: always
-# # For development data to be stored in a docker volume
-# volumes:
-#   dbdata:
+  #MySQL Database Container
+  database:
+    container_name: database
+    image: mysql:5.7
+    environment:
+      MYSQL_RANDOM_ROOT_PASSWORD: 1
+      MYSQL_DATABASE: users_prod
+      MYSQL_USER: dbuser
+      MYSQL_PASSWORD: dbuserpassword
+    volumes:
+      - dbdata:/var/lib/mysql
+      - ./_MySQL_Init_Script:/docker-entrypoint-initdb.d
+    ports:
+      - 3306:3306
+    restart: always
+# For development data to be stored in a docker volume
+volumes:
+  dbdata:

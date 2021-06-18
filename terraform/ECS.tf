@@ -9,7 +9,8 @@ module "ecs_cluster" {
 
   component             = "dotnet"
   deployment_identifier = "react"
-
+  cluster_instance_root_block_device_size = 30
+  cluster_instance_root_block_device_type = "gp2"
   cluster_name                         = "cluster"
   cluster_instance_ssh_public_key_path = "./terraform.pub"
   cluster_instance_type                = "t2.micro"
