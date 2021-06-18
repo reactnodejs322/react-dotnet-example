@@ -1,6 +1,7 @@
 version: "3.7"
 
 services:
+  # Nginx container
   reverseproxy:
     build:
       context: ./nginx
@@ -13,6 +14,7 @@ services:
       - client
     restart: always
 
+    # React container
   client:
     stdin_open: true
     container_name: client
@@ -26,6 +28,7 @@ services:
       - NODE_ENV=production
     ports:
       - "3000:3000"
+
   # .NET CONTAINER
   api:
     container_name: api
@@ -42,6 +45,7 @@ services:
       # for production  http://+:5000
       ASPNETCORE_URLS: "http://+;http://+:5000"
     restart: always
+
   #MySQL Database Container
   database:
     container_name: database
@@ -57,6 +61,7 @@ services:
     ports:
       - 3306:3306
     restart: always
-# For development data to be stored in a docker volume
+# For development database data to be stored in a docker volume
+# calllled dbdata
 volumes:
   dbdata:
